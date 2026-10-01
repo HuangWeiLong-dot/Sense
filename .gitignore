@@ -1,0 +1,51 @@
+# ---------------- 依赖 ----------------
+node_modules/
+
+# ---------------- 构建产物 ----------------
+dist/
+dist-ssr/
+.vite/
+coverage/
+release/
+
+# 根目录 build/ 是 electron-builder 的 buildResources：
+# 只忽略中间产物，图标是打包必需资源，要进版本库
+build/*
+!build/icon.ico
+!build/icon.png
+
+# ---------------- 桌面打包中间产物 ----------------
+.electron-dist/
+.electron-cache/
+
+# ---------------- 本地缓存 / 临时目录 ----------------
+.npm-cache/
+.tmp/
+
+# ---------------- Android ----------------
+# 含本机 SDK 绝对路径（会泄露用户名），绝不能入库
+android/local.properties
+android/.gradle/
+android/build/
+android/app/build/
+android/captures/
+android/.idea/
+android/app/release/
+*.hprof
+
+# ---------------- 密钥与个人数据 ----------------
+*.jks
+*.keystore
+key.properties
+.env
+.env.*
+*.sense.json
+
+# ---------------- 编辑器 / 系统 ----------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+npm-debug.log*
+yarn-error.log*

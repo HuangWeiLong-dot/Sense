@@ -1,0 +1,44 @@
+appId: ai.sense.desktop
+productName: Sense
+copyright: Sense — 本地运行的情感判断工具
+
+directories:
+  output: release
+  buildResources: build
+
+# 只打包运行期真正需要的东西。
+# 前端依赖（React / ECharts…）已经被 Vite 打进 dist/ 的静态资源里，
+# 主进程也只用 electron + node 内置模块，所以整个 node_modules 都不要。
+# 不加这条排除规则的话 electron-builder 会把生产依赖一起塞进 asar（实测多出 1300 多个文件）。
+files:
+  - dist/**/*
+  - desktop/**/*
+  - package.json
+  - '!node_modules/**/*'
+  - '!**/*.map'
+
+asar: true
+
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+    # zip 作为兜底：不经过 NSIS，任何环境都能用（解压即用）
+    - target: zip
+      arch: [x64]
+
+nsis:
+  # oneClick: false = 可自选安装目录的常规向导式安装
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Sense
+  artifactName: Sense-Setup-${version}.${ext}
+
+portable:
+  artifactName: Sense-Portable-${version}.${ext}

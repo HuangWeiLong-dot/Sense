@@ -1,0 +1,9 @@
+<resources>
+    <!-- 用平台主题即可：宿主只是一个 WebView，不需要 AppCompat -->
+    <style name="Theme.Sense" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">#FFF6FA</item>
+        <item name="android:statusBarColor">#FFF6FA</item>
+        <item name="android:navigationBarColor">#FFF6FA</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

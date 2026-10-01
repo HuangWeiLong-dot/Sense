@@ -1,0 +1,275 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------ *
+ * Sense · 粉白毛玻璃（Pink & White Glassmorphism）
+ * 粉白渐变画布 + 白色半透明模糊卡片 + 亮边 + 粉调柔阴影。
+ * 深色文字（深梅色，非纯黑）保证在浅色底上可读。
+ * 布局参考 DeepSeek 首页：居中 Hero + 单一主输入窗口。
+ * ------------------------------------------------------------------ */
+
+@theme {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'PingFang SC',
+    'Microsoft YaHei', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Courier New', monospace;
+
+  /* 画布（渐变叠在它之上） */
+  --color-canvas: #fff6fa;
+
+  /* 玻璃表面：浅色底上靠“更白”来显形 */
+  --color-surface: rgba(255, 255, 255, 0.55);
+  --color-surface-2: rgba(255, 255, 255, 0.4);
+  --color-line: rgba(196, 138, 172, 0.22);
+  --color-line-strong: rgba(196, 138, 172, 0.34);
+
+  /* 文字：深梅色五档，避免纯黑 */
+  --color-ink-900: #2b1b2e;
+  --color-ink-700: #4a3550;
+  --color-ink-500: #7a6480;
+  --color-ink-400: #9b87a3;
+  --color-ink-300: #b9a8c0;
+
+  /* 强调色：玫粉 */
+  --color-accent-50: rgba(236, 72, 153, 0.1);
+  --color-accent-100: rgba(236, 72, 153, 0.24);
+  --color-accent-300: #f472b6;
+  --color-accent-400: #ec4899;
+  --color-accent-500: #db2777;
+  --color-accent-600: #be185d;
+  --color-accent-700: #9d174d;
+
+  /* 语义色：浅底上取更深的色阶保证对比度 */
+  --color-good-50: rgba(16, 185, 129, 0.12);
+  --color-good-100: rgba(16, 185, 129, 0.28);
+  --color-good-500: #10b981;
+  --color-good-700: #047857;
+
+  --color-warn-50: rgba(245, 158, 11, 0.14);
+  --color-warn-100: rgba(245, 158, 11, 0.3);
+  --color-warn-500: #f59e0b;
+  --color-warn-700: #b45309;
+
+  --color-bad-50: rgba(239, 68, 68, 0.12);
+  --color-bad-100: rgba(239, 68, 68, 0.28);
+  --color-bad-500: #ef4444;
+  --color-bad-700: #b91c1c;
+
+  /* 圆角：玻璃卡 20px */
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 26px;
+
+  /* 粉调柔和阴影 */
+  --shadow-xs: 0 2px 10px rgba(196, 120, 160, 0.12);
+  --shadow-sm: 0 4px 18px rgba(196, 120, 160, 0.16);
+  --shadow-md: 0 8px 32px rgba(196, 120, 160, 0.2);
+  --shadow-lg: 0 18px 56px rgba(196, 120, 160, 0.26);
+  --shadow-accent: 0 10px 28px rgba(219, 39, 119, 0.32);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  /* 粉白渐变 + 漂浮的粉/紫/蜜桃光斑：玻璃感的前提 */
+  background-color: var(--color-canvas);
+  background-image:
+    radial-gradient(900px 700px at 12% 6%, rgba(255, 168, 208, 0.68), transparent 62%),
+    radial-gradient(780px 640px at 88% 8%, rgba(216, 180, 254, 0.5), transparent 64%),
+    radial-gradient(820px 680px at 76% 94%, rgba(255, 205, 178, 0.48), transparent 66%),
+    radial-gradient(700px 560px at 14% 90%, rgba(255, 190, 225, 0.55), transparent 66%),
+    linear-gradient(135deg, #fffafd 0%, #fff2f8 34%, #fdeef9 66%, #f8f0ff 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(236, 72, 153, 0.22);
+  color: var(--color-ink-900);
+}
+
+/* 细滚动条 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(219, 39, 119, 0.32) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(219, 39, 119, 0.3);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ------------------------------------------------------------------ *
+ * 组件基础件
+ * ------------------------------------------------------------------ */
+
+@utility card {
+  border-radius: var(--radius-xl);
+  background-color: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 8px 32px rgba(196, 120, 160, 0.2);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+
+@utility label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink-400);
+}
+
+@utility field {
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(196, 138, 172, 0.3);
+  background-color: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.6rem 0.85rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-ink-900);
+  outline: none;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.field::placeholder {
+  color: var(--color-ink-300);
+}
+.field:hover:not(:focus) {
+  border-color: rgba(219, 39, 119, 0.4);
+  background-color: rgba(255, 255, 255, 0.78);
+}
+.field:focus {
+  border-color: rgba(219, 39, 119, 0.6);
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.16);
+}
+.field:disabled {
+  opacity: 0.55;
+}
+
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  /* 玻璃胶囊 */
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--color-ink-700);
+  padding: 0.5rem 1.05rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease;
+  white-space: nowrap;
+}
+.btn:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(236, 72, 153, 0.4);
+  color: var(--color-accent-600);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(196, 120, 160, 0.24);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent-500);
+  outline-offset: 2px;
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 主按钮：玫粉渐变 + 粉调投影，浅底上层级最强 */
+@utility btn-primary {
+  background-image: linear-gradient(135deg, var(--color-accent-300), var(--color-accent-500));
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 10px 28px rgba(219, 39, 119, 0.32);
+}
+.btn-primary:hover:not(:disabled) {
+  background-image: linear-gradient(135deg, var(--color-accent-400), var(--color-accent-600));
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 14px 34px rgba(219, 39, 119, 0.42);
+}
+
+@utility btn-danger {
+  border-color: rgba(239, 68, 68, 0.32);
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--color-bad-700);
+}
+.btn-danger:hover:not(:disabled) {
+  background-color: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: var(--color-bad-700);
+}
+
+@utility notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(196, 138, 172, 0.28);
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: var(--color-ink-700);
+}
+@utility notice-info {
+  border-color: rgba(236, 72, 153, 0.32);
+  background-color: rgba(255, 240, 247, 0.75);
+}
+@utility notice-warn {
+  border-color: rgba(245, 158, 11, 0.42);
+  background-color: rgba(255, 248, 235, 0.8);
+}
+@utility notice-error {
+  border-color: rgba(239, 68, 68, 0.42);
+  background-color: rgba(255, 240, 240, 0.82);
+}
+@utility notice-success {
+  border-color: rgba(16, 185, 129, 0.4);
+  background-color: rgba(238, 252, 247, 0.82);
+}

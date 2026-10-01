@@ -1,0 +1,4 @@
+# 仅用于本机验证的临时配置（.electron-dist 是本会话为了绕开目录重命名限制
+# 而预先解压的 Electron）。正常运行不需要这个文件，直接 npm run package:win。
+extends: electron-builder.yml
+electronDist: .electron-dist
